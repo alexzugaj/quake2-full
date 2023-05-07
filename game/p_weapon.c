@@ -539,9 +539,9 @@ GRENADE
 ======================================================================
 */
 
-#define GRENADE_TIMER		3.0
-#define GRENADE_MINSPEED	400
-#define GRENADE_MAXSPEED	800
+#define GRENADE_TIMER		6.0
+#define GRENADE_MINSPEED	600
+#define GRENADE_MAXSPEED	1500
 
 void weapon_grenade_fire (edict_t *ent, qboolean held)
 {
@@ -651,7 +651,7 @@ void Weapon_Grenade (edict_t *ent)
 			if (!ent->client->grenade_time)
 			{
 				ent->client->grenade_time = level.time + GRENADE_TIMER + 0.2;
-				ent->client->weapon_sound = gi.soundindex("weapons/hgrenc1b.wav");
+				//ent->client->weapon_sound = gi.soundindex("weapons/hgrenc1b.wav");
 			}
 
 			// they waited too long, detonate it in their hand
