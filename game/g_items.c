@@ -444,7 +444,7 @@ qboolean Pickup_Key (edict_t *ent, edict_t *other)
 
 //======================================================================
 
-qboolean Add_Ammo (edict_t *ent, gitem_t *item, int count)
+qboolean Add_Ammo (edict_t *ent, gitem_t *item, int count) //check
 {
 	int			index;
 	int			max;
@@ -480,7 +480,7 @@ qboolean Add_Ammo (edict_t *ent, gitem_t *item, int count)
 	return true;
 }
 
-qboolean Pickup_Ammo (edict_t *ent, edict_t *other)
+qboolean Pickup_Ammo (edict_t *ent, edict_t *other) //check
 {
 	int			oldcount;
 	int			count;

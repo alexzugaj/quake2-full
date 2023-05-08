@@ -605,7 +605,7 @@ typedef struct
 extern	field_t fields[];
 extern	gitem_t	itemlist[];
 
-
+void NewHelpMsg(edict_t* ent);
 //
 // g_cmds.c
 //

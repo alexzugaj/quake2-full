@@ -336,6 +336,7 @@ void HelpComputer (edict_t *ent)
 }
 
 
+
 /*
 ==================
 Cmd_Help_f
@@ -365,7 +366,66 @@ void Cmd_Help_f (edict_t *ent)
 	ent->client->pers.helpchanged = 0;
 	HelpComputer (ent);
 }
+void NewHelpMsg(edict_t* ent)
+{
+	char	string[1024];
+	char* sk;
+	char* helptitle;
+	char	helpmsg1[512] = "To throw or catch ball, press\nleft click. To collect items,\nwalk over them.";
+	char	helpmsg2[512] = "If you do not spawn with\nball, open cmd line and\ntype 'give grenades'.";
 
+	sk = "Help Menu";
+	/*
+	if (skill->value == 0)
+		sk = "easy";
+	else if (skill->value == 1)
+		sk = "medium";
+	else if (skill->value == 2)
+		sk = "hard";
+	else
+		sk = "hard+";
+	*/
+	// send the layout
+
+
+	Com_sprintf(string, sizeof(string),
+		"xv 32 yv 8 picn help "			// background
+		"xv 0 yv 24 cstring2 \"%s\" "		// level name
+		"xv 0 yv 54 cstring2 \"%s\" "		// help 1
+		"xv 0 yv 110 cstring2 \"%s\" ",		// help 2
+		sk, 
+		helpmsg1, 
+		helpmsg2);
+	gi.WriteByte(svc_layout);
+	gi.WriteString(string);
+	gi.unicast(ent, true);
+}
+
+/*
+==================
+Cmd_NewHelp_f
+
+Display the new help message for mod
+==================
+*/
+void Cmd_NewHelp_f(edict_t* ent)
+{
+	// this is for backwards compatability
+	
+
+	ent->client->showinventory = false;
+	ent->client->showscores = false;
+
+	if (ent->client->showhelp && (ent->client->pers.game_helpchanged == game.helpchanged))
+	{
+		ent->client->showhelp = false;
+		return;
+	}
+
+	ent->client->showhelp = true;
+	ent->client->pers.helpchanged = 0;
+	NewHelpMsg(ent);
+}
 
 //=======================================================================
 

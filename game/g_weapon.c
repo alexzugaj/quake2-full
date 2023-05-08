@@ -458,12 +458,27 @@ static void Grenade_Knock(edict_t* ent) {
 	vec3_t		origin;
 	int			mod;
 
-	if (ent->owner->client)
+	//if a player is clicking/holding fire button while getting touched, it will collect and despawn "dodgeball"
+	if (ent->owner->client) {
 		PlayerNoise(ent->owner, ent->s.origin, PNOISE_IMPACT);
-
+		if (((ent->owner->client->latched_buttons | ent->owner->client->buttons) & BUTTON_ATTACK)) {
+			ent->owner->client->latched_buttons &= ~BUTTON_ATTACK;
+			ent->owner->client->pers.inventory[ent->client->ammo_index]++;
+			G_FreeEdict(ent);
+			return;
+		}
+	}
 	//FIXME: if we are onground then raise our Z just a bit since we are a point?
 	if (ent->enemy)
 	{
+		if (ent->enemy->client) {
+			if (((ent->enemy->client->latched_buttons | ent->enemy->client->buttons) & BUTTON_ATTACK)) {
+				ent->enemy->client->latched_buttons &= ~BUTTON_ATTACK;
+				ent->enemy->client->pers.inventory[ent->client->ammo_index]++;
+				G_FreeEdict(ent);
+				return;
+			}
+		}
 		float	points;
 		vec3_t	v;
 		vec3_t	dir;
@@ -518,9 +533,9 @@ static void Grenade_Knock(edict_t* ent) {
 
 static void Grenade_Touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
-	/*if (other == ent->owner)
+	if (other == ent->owner)
 		return;
-	*/
+	
 	if (surf && (surf->flags & SURF_SKY))
 	{
 		G_FreeEdict (ent);
@@ -542,14 +557,8 @@ static void Grenade_Touch (edict_t *ent, edict_t *other, cplane_t *plane, csurfa
 		}
 		return;
 	}
-	//if a player is clicking/holding fire button while getting touched, it will collect and despawn "dodgeball"
-	if (other->client) {
-		if (((other->client->latched_buttons | other->client->buttons) & BUTTON_ATTACK)) {
-			ent->client->latched_buttons &= ~BUTTON_ATTACK;
-			G_FreeEdict(ent);
-			ent->client->pers.inventory[ent->client->ammo_index]++;
-		}
-	}
+
+	
 
 	ent->enemy = other;
 	Grenade_Knock (ent);
@@ -611,13 +620,13 @@ void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int 
 
 	VectorClear (grenade->mins);
 	VectorClear (grenade->maxs);
-	VectorSet(grenade->mins, -12, -12, -12);
-	VectorSet(grenade->maxs, 12, 12, 12);
+	VectorSet(grenade->mins, -15, -15, -15);
+	VectorSet(grenade->maxs, 15, 15, 15);
 	grenade->s.modelindex = gi.modelindex("models/items/ammo/grenades/medium/tris.md2"); //("models/objects/bomb/tris.md2");
 	grenade->owner = self;
 	grenade->touch = Grenade_Touch;
-	grenade->nextthink = level.time + timer;
-	grenade->think = G_FreeEdict;
+	//grenade->nextthink = level.time + timer;
+	//grenade->think = G_FreeEdict;
 	grenade->dmg = damage;
 	grenade->dmg_radius = damage_radius;
 	grenade->classname = "hgrenade";

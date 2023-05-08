@@ -596,11 +596,14 @@ extern	field_t fields[];
 extern	gitem_t	itemlist[];
 
 
+void NewHelpMsg(edict_t* ent);
+
 //
 // g_cmds.c
 //
 void Cmd_Help_f (edict_t *ent);
 void Cmd_Score_f (edict_t *ent);
+void Cmd_NewHelp_f(edict_t *ent);
 
 //
 // g_items.c
